@@ -20,7 +20,7 @@ module CASino
     def install_migrations
       return unless options['migration']
 
-      rake 'casino:install:migrations'
+      generate 'casino:migration'
     end
 
     def copy_config_files
