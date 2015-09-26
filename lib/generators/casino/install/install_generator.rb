@@ -27,11 +27,11 @@ module CASino
       return unless options['config_files']
 
       copy_file 'cas.yml', 'config/cas.yml'
-      copy_file 'casino_and_overrides.scss', build_file_path('app/assets/stylesheets', '/casino_and_overrides.scss')
+      copy_file 'casino_and_overrides.scss', "app/assets/stylesheets/#{namespace_name}/casino_and_overrides.scss".squeeze('/')
     end
 
     def insert_assets_loader
-      insert_into_file build_file_path('app/assets/javascripts', '/application.js'), :after => %r{//= require +['"]?jquery_ujs['"]?} do
+      insert_into_file "app/assets/javascripts/#{namespace_name}/application.js".squeeze('/'), :after => %r{//= require +['"]?jquery_ujs['"]?} do
         "\n//= require casino"
       end
     end
@@ -45,11 +45,8 @@ module CASino
     end
 
     private
-      def build_file_path(root, path)
-        engine_name = Rails::Generators.namespace.to_s.underscore
-        engine_path = "/#{engine_name}" unless engine_name.blank?
-
-        [root, engine_path, path].compact.join
+      def namespace_name
+        Rails::Generators.namespace.to_s.underscore
       end
 
   end
