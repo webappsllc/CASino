@@ -23,6 +23,10 @@ module CASino::SessionsHelper
     tgt.user
   end
 
+  def current_authenticator_context
+    CASino.config.authenticator_context_builder.call(params, request)
+  end
+  
   def ensure_signed_in
     redirect_to login_path unless signed_in?
   end
