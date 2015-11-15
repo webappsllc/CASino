@@ -231,7 +231,7 @@ describe CASino::SessionsController do
         end
 
         context 'with two-factor authentication enabled' do
-          let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
+          let!(:user) { CASino.user_class.create! username: username, authenticator: authenticator }
           let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
 
           it 'renders the validate_otp template' do
@@ -283,24 +283,24 @@ describe CASino::SessionsController do
             it 'generates exactly one user' do
               lambda do
                 post :create, request_options
-              end.should change(CASino::User, :count).by(1)
+              end.should change(CASino.user_class, :count).by(1)
             end
 
             it 'sets the users attributes' do
               post :create, request_options
-              user = CASino::User.last
+              user = CASino.user_class.last
               user.username.should == username
               user.authenticator.should == authenticator
             end
           end
 
           context 'when the user already exists' do
-            let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
+            let!(:user) { CASino.user_class.create! username: username, authenticator: authenticator }
 
             it 'does not regenerate the user' do
               lambda do
                 post :create, request_options
-              end.should_not change(CASino::User, :count)
+              end.should_not change(CASino.user_class, :count)
             end
 
             it 'updates the extra attributes' do

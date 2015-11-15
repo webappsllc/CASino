@@ -5,6 +5,7 @@ module CASino
   include ActiveSupport::Configurable
 
   defaults = {
+    user_class_name: 'CASino::User',
     authenticators: HashWithIndifferentAccess.new,
     require_service_rules: false,
     logger: Rails.logger,
@@ -51,4 +52,8 @@ module CASino
   }
 
   self.config.merge! defaults.deep_dup
+
+  def self.user_class
+    config.user_class_name.constantize
+  end
 end

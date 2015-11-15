@@ -30,7 +30,7 @@ shared_examples_for 'a service ticket validator' do
     context 'with an unconsumed service ticket' do
       context 'with extra attributes using strings as keys' do
         before(:each) do
-          CASino::User.any_instance.stub(:extra_attributes).and_return({ "id" => 1234 })
+          CASino.user_class.any_instance.stub(:extra_attributes).and_return({ "id" => 1234 })
         end
 
         it 'includes the extra attributes' do
@@ -41,7 +41,7 @@ shared_examples_for 'a service ticket validator' do
 
       context 'with extra attributes using array as value' do
         before(:each) do
-          CASino::User.any_instance.stub(:extra_attributes).and_return({ "memberOf" => [ "test", "yolo" ] })
+          CASino.user_class.any_instance.stub(:extra_attributes).and_return({ "memberOf" => [ "test", "yolo" ] })
         end
 
         it 'includes all values' do

@@ -38,7 +38,7 @@ module CASino::TicketGrantingTicketProcessor
   end
 
   def load_or_initialize_user(authenticator, username, extra_attributes)
-    user = CASino::User
+    user = CASino.user_class
       .where(authenticator: authenticator, username: username)
       .first_or_initialize
     user.extra_attributes = extra_attributes

@@ -1,6 +1,6 @@
 
 class CASino::TwoFactorAuthenticator < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, class_name: CASino.user_class.name
 
   scope :active, -> { where(active: true) }
 

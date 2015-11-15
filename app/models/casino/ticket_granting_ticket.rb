@@ -5,7 +5,7 @@ class CASino::TicketGrantingTicket < ActiveRecord::Base
 
   self.ticket_prefix = 'TGC'.freeze
 
-  belongs_to :user
+  belongs_to :user, class_name: CASino.user_class.name
   has_many :service_tickets, dependent: :destroy
 
   scope :active, -> { where(awaiting_two_factor_authentication: false).order('updated_at DESC') }
