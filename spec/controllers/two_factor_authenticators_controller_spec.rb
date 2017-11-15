@@ -1,13 +1,14 @@
 require 'spec_helper'
 
 describe CASino::TwoFactorAuthenticatorsController do
-  include CASino::Engine.routes.url_helpers
-  let(:params) { { } }
-  let(:request_options) { params.merge(use_route: :casino) }
+  routes { CASino::Engine.routes }
+
+  let(:params) { Hash.new }
+  let(:request_options) { params }
 
   describe 'GET "new"' do
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:user) { ticket_granting_ticket.user }
       let(:user_agent) { ticket_granting_ticket.user_agent }
 
@@ -60,7 +61,7 @@ describe CASino::TwoFactorAuthenticatorsController do
 
   describe 'POST "create"' do
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:user) { ticket_granting_ticket.user }
       let(:id) { two_factor_authenticator.id }
       let(:otp) { '123456' }
@@ -72,7 +73,7 @@ describe CASino::TwoFactorAuthenticatorsController do
 
       context 'with an invalid authenticator' do
         context 'with an expired authenticator' do
-          let(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, :inactive, user: user }
+          let(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, :inactive, user: user }
 
           before(:each) do
             two_factor_authenticator.created_at = 10.hours.ago
@@ -91,7 +92,7 @@ describe CASino::TwoFactorAuthenticatorsController do
         end
 
         context 'with a authenticator of another user' do
-          let(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, :inactive }
+          let(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, :inactive }
 
           before(:each) do
             two_factor_authenticator.created_at = 10.hours.ago
@@ -106,7 +107,7 @@ describe CASino::TwoFactorAuthenticatorsController do
       end
 
       context 'with a valid authenticator' do
-        let(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, :inactive, user: user }
+        let(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, :inactive, user: user }
 
         context 'with a valid OTP' do
           before(:each) do
@@ -129,7 +130,7 @@ describe CASino::TwoFactorAuthenticatorsController do
           end
 
           context 'when another two-factor authenticator was active' do
-            let!(:other_two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
+            let!(:other_two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
 
             it 'does activate the authenticator' do
               post :create, request_options
@@ -184,7 +185,7 @@ describe CASino::TwoFactorAuthenticatorsController do
 
   describe 'DELETE "destroy"' do
     context 'with an existing ticket-granting ticket' do
-      let(:ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
+      let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
       let(:user) { ticket_granting_ticket.user }
       let(:params) { { id: two_factor_authenticator.id } }
 
@@ -193,8 +194,8 @@ describe CASino::TwoFactorAuthenticatorsController do
       end
 
       context 'with a valid two-factor authenticator' do
-        let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator, user: user }
-        let!(:other_two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator }
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
+        let!(:other_two_factor_authenticator) { FactoryBot.create :two_factor_authenticator }
 
         it 'redirects to the session overview' do
           delete :destroy, request_options
@@ -221,7 +222,7 @@ describe CASino::TwoFactorAuthenticatorsController do
       end
 
       context 'with a two-factor authenticator of another user' do
-        let!(:two_factor_authenticator) { FactoryGirl.create :two_factor_authenticator }
+        let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator }
 
         it 'redirects to the session overview' do
           delete :destroy, request_options
@@ -237,6 +238,8 @@ describe CASino::TwoFactorAuthenticatorsController do
     end
 
     context 'without a ticket-granting ticket' do
+      let(:params) { { id: 0 } }
+
       it 'redirects to the login page' do
         delete :destroy, request_options
         response.should redirect_to(login_path)
