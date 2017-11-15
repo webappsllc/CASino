@@ -4,7 +4,7 @@ shared_examples_for 'a service ticket validator' do
   routes { CASino::Engine.routes }
 
   let(:request_options) { params }
-  let(:service_ticket) { FactoryGirl.create :service_ticket }
+  let(:service_ticket) { FactoryBot.create :service_ticket }
   let(:service) { service_ticket.service }
   let(:parameters) { { service: service, ticket: service_ticket.ticket }}
   let(:params) { parameters }

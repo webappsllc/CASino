@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coveralls', '~> 0.7'
-  s.add_development_dependency 'factory_girl', '~> 4.1'
+  s.add_development_dependency 'factory_bot', '~> 4.1'
   s.add_development_dependency 'rake', '~> 10.0'
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'rspec-its', '~> 1.0'
