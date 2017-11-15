@@ -5,8 +5,8 @@ describe CASino::SessionsController do
 
   routes { CASino::Engine.routes }
 
-  let(:params) { { } }
-  let(:user_agent) { 'YOLOBrowser 420.00'}
+  let(:params) { {} }
+  let(:user_agent) { 'YOLOBrowser 420.00' }
 
   before(:each) do
     request.user_agent = user_agent
@@ -93,9 +93,7 @@ describe CASino::SessionsController do
         end
 
         it 'generates a service ticket' do
-          lambda do
-            get :new, params
-          end.should change(CASino::ServiceTicket, :count).by(1)
+          -> { get :new, params }.should change(CASino::ServiceTicket, :count).by(1)
         end
 
         it 'does not set the issued_from_credentials flag on the service ticket' do
@@ -138,9 +136,7 @@ describe CASino::SessionsController do
         end
 
         it 'does not generate a service ticket' do
-          lambda do
-            get :new, params
-          end.should change(CASino::ServiceTicket, :count).by(0)
+          -> { get :new, params }.should change(CASino::ServiceTicket, :count).by(0)
         end
 
         context 'with a changed browser' do
@@ -176,7 +172,7 @@ describe CASino::SessionsController do
 
     context 'with an expired login ticket' do
       let(:expired_login_ticket) { FactoryBot.create :login_ticket, :expired }
-      let(:params) { { lt: expired_login_ticket.ticket }}
+      let(:params) { { lt: expired_login_ticket.ticket } }
 
       it 'renders the new template' do
         post :create, params
@@ -187,7 +183,7 @@ describe CASino::SessionsController do
     context 'with a valid login ticket' do
       let(:login_ticket) { FactoryBot.create :login_ticket }
       let(:username) { 'testuser' }
-      let(:params) { { lt: login_ticket.ticket, username: username, password: 'wrrooonnng' }}
+      let(:params) { { lt: login_ticket.ticket, username: username, password: 'wrrooonnng' } }
       let!(:user) { FactoryBot.create :user, username: username }
 
       context 'with invalid credentials' do
@@ -304,16 +300,12 @@ describe CASino::SessionsController do
           end
 
           it 'generates a ticket-granting ticket' do
-            lambda do
-              post :create, params
-            end.should change(CASino::TicketGrantingTicket, :count).by(1)
+            -> { post :create, params }.should change(CASino::TicketGrantingTicket, :count).by(1)
           end
 
           context 'when the user does not exist yet' do
             it 'generates exactly one user' do
-              lambda do
-                post :create, params
-              end.should change(CASino::User, :count).by(1)
+              -> { post :create, params }.should change(CASino::User, :count).by(1)
             end
 
             it 'sets the users attributes' do
@@ -328,9 +320,7 @@ describe CASino::SessionsController do
             let!(:user) { CASino::User.create! username: username, authenticator: authenticator }
 
             it 'does not regenerate the user' do
-              lambda do
-                post :create, params
-              end.should_not change(CASino::User, :count)
+              -> { post :create, params }.should_not change(CASino::User, :count)
             end
 
             it 'updates the extra attributes' do
@@ -351,9 +341,7 @@ describe CASino::SessionsController do
           end
 
           it 'generates a service ticket' do
-            lambda do
-              post :create, params
-            end.should change(CASino::ServiceTicket, :count).by(1)
+            -> { post :create, params }.should change(CASino::ServiceTicket, :count).by(1)
           end
 
           it 'does set the issued_from_credentials flag on the service ticket' do
@@ -362,9 +350,7 @@ describe CASino::SessionsController do
           end
 
           it 'generates a ticket-granting ticket' do
-            lambda do
-              post :create, params
-            end.should change(CASino::TicketGrantingTicket, :count).by(1)
+            -> { post :create, params }.should change(CASino::TicketGrantingTicket, :count).by(1)
           end
         end
       end
@@ -379,7 +365,7 @@ describe CASino::SessionsController do
       let(:user_agent) { ticket_granting_ticket.user_agent }
       let(:otp) { '123456' }
       let(:service) { 'http://www.example.com/testing' }
-      let(:params) { { tgt: tgt, otp: otp, service: service }}
+      let(:params) { { tgt: tgt, otp: otp, service: service } }
 
       context 'with an active authenticator' do
         let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
@@ -454,7 +440,7 @@ describe CASino::SessionsController do
 
   describe 'GET "logout"' do
     let(:url) { nil }
-    let(:params) { { :url => url } }
+    let(:params) { { url: url } }
 
     context 'with an existing ticket-granting ticket' do
       let(:ticket_granting_ticket) { FactoryBot.create :ticket_granting_ticket }
@@ -465,7 +451,7 @@ describe CASino::SessionsController do
 
       it 'deletes the ticket-granting ticket' do
         get :logout, params
-        CASino::TicketGrantingTicket.where(id: ticket_granting_ticket.id).first.should == nil
+        CASino::TicketGrantingTicket.where(id: ticket_granting_ticket.id).first.should.nil?
       end
 
       it 'renders the logout template' do
@@ -483,7 +469,7 @@ describe CASino::SessionsController do
       end
 
       context 'with a service' do
-        let(:params) { { :service => url } }
+        let(:params) { { service: url } }
         let(:url) { 'http://www.example.org' }
 
         context 'when whitelisted' do
@@ -586,7 +572,7 @@ describe CASino::SessionsController do
         let(:login_attempts) do
           6.times.map do |counter|
             FactoryBot.create :login_attempt, user: ticket_granting_ticket.user,
-                                               created_at: counter.minutes.ago
+                                              created_at: counter.minutes.ago
           end
         end
 
@@ -627,9 +613,7 @@ describe CASino::SessionsController do
       let(:params) { { id: ticket_granting_ticket.id } }
 
       it 'deletes exactly one ticket-granting ticket' do
-        lambda do
-          delete :destroy, params
-        end.should change(CASino::TicketGrantingTicket, :count).by(-1)
+        -> { delete :destroy, params }.should change(CASino::TicketGrantingTicket, :count).by(-1)
       end
 
       it 'deletes the ticket-granting ticket' do
@@ -644,11 +628,9 @@ describe CASino::SessionsController do
     end
 
     context 'with an invalid ticket-granting ticket' do
-      let(:params) { { id: 99999 } }
+      let(:params) { { id: 99_999 } }
       it 'does not delete a ticket-granting ticket' do
-        lambda do
-          delete :destroy, params
-        end.should_not change(CASino::TicketGrantingTicket, :count)
+        -> { delete :destroy, params }.should_not change(CASino::TicketGrantingTicket, :count)
       end
 
       it 'redirects to the session overview' do
@@ -662,9 +644,7 @@ describe CASino::SessionsController do
       let(:params) { { id: ticket_granting_ticket.id } }
 
       it 'does not delete a ticket-granting ticket' do
-        lambda do
-          delete :destroy, params
-        end.should_not change(CASino::TicketGrantingTicket, :count)
+        -> { delete :destroy, params }.should_not change(CASino::TicketGrantingTicket, :count)
       end
 
       it 'redirects to the session overview' do
@@ -676,7 +656,7 @@ describe CASino::SessionsController do
 
   describe 'GET "destroy_others"' do
     let(:url) { nil }
-    let(:params) { { :service => url } }
+    let(:params) { { service: url } }
 
     context 'with an existing ticket-granting ticket' do
       let(:user) { FactoryBot.create :user }
@@ -689,9 +669,7 @@ describe CASino::SessionsController do
       end
 
       it 'deletes all other ticket-granting tickets' do
-        lambda do
-          get :destroy_others, params
-        end.should change(CASino::TicketGrantingTicket, :count).by(-3)
+        -> { get :destroy_others, params }.should change(CASino::TicketGrantingTicket, :count).by(-3)
       end
 
       it 'redirects to the session overview' do
