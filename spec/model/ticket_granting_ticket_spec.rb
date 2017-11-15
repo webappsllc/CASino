@@ -32,12 +32,10 @@ describe CASino::TicketGrantingTicket do
     end
   end
 
-  describe "user_ip" do
-
+  describe 'user_ip' do
     it 'returns request remote_ip' do
       ticket_granting_ticket.user_ip.should == '127.0.0.1'
     end
-
   end
 
   describe '#same_user?' do
@@ -50,7 +48,7 @@ describe CASino::TicketGrantingTicket do
     end
 
     context 'with a ticket from another user' do
-      let(:other_ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket  }
+      let(:other_ticket_granting_ticket) { FactoryGirl.create :ticket_granting_ticket }
 
       it 'should return false' do
         ticket_granting_ticket.same_user?(other_ticket_granting_ticket).should == false

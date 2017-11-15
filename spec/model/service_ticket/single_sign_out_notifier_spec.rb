@@ -22,7 +22,7 @@ describe CASino::ServiceTicket::SingleSignOutNotifier do
     end
 
     it 'sets the timeout values' do
-      [:read_timeout=, :open_timeout=].each do |timeout|
+      %i[read_timeout= open_timeout=].each do |timeout|
         Net::HTTP.any_instance.should_receive(timeout).with(CASino.config.service_ticket[:single_sign_out_notification][:timeout])
       end
       notifier.notify
@@ -36,7 +36,7 @@ describe CASino::ServiceTicket::SingleSignOutNotifier do
 
     context 'with server error' do
       [404, 500].each do |status_code|
-        context "#{status_code}" do
+        context status_code.to_s do
           before(:each) do
             stub_request(:post, service).to_return status: status_code
           end
