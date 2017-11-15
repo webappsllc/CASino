@@ -160,7 +160,7 @@ describe CASino::SessionsController do
 
     context 'with an unsupported format' do
       it 'sets the status code to 406' do
-        get :new, use_route: :casino, format: :xml
+        get :new, format: :xml
         response.status.should == 406
       end
     end
