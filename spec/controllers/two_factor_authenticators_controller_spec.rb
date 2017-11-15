@@ -238,6 +238,8 @@ describe CASino::TwoFactorAuthenticatorsController do
     end
 
     context 'without a ticket-granting ticket' do
+      let(:params) { { id: 0 } }
+
       it 'redirects to the login page' do
         delete :destroy, request_options
         response.should redirect_to(login_path)
