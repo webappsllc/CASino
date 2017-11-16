@@ -5,6 +5,10 @@ class CASino::ApplicationController < ::ApplicationController
 
   layout 'application'
 
+  rescue_from ActionController::UnknownFormat do
+    head :not_acceptable
+  end
+
   unless Rails.env.development?
     rescue_from ActionView::MissingTemplate, with: :missing_template
   end

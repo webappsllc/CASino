@@ -4,7 +4,7 @@ describe CASino::TwoFactorAuthenticatorsController do
   routes { CASino::Engine.routes }
 
   let(:params) { Hash.new }
-  let(:request_options) { params }
+  let(:request_options) { {params: params} }
 
   describe 'GET "new"' do
     context 'with an existing ticket-granting ticket' do
@@ -18,22 +18,22 @@ describe CASino::TwoFactorAuthenticatorsController do
 
       it 'creates exactly one authenticator' do
         lambda do
-          get :new, request_options
+          get :new, **request_options
         end.should change(CASino::TwoFactorAuthenticator, :count).by(1)
       end
 
       it 'assigns the two_factor_authenticator' do
-        get :new, request_options
+        get :new, **request_options
         assigns(:two_factor_authenticator).should be_kind_of(CASino::TwoFactorAuthenticator)
       end
 
       it 'creates an inactive two-factor authenticator' do
-        get :new, request_options
+        get :new, **request_options
         CASino::TwoFactorAuthenticator.last.should_not be_active
       end
 
       it 'renders the new template' do
-        get :new, request_options
+        get :new, **request_options
         response.should render_template(:new)
       end
 
@@ -45,7 +45,7 @@ describe CASino::TwoFactorAuthenticatorsController do
         render_views
 
         it 'renders the new template' do
-          get :new, request_options
+          get :new, **request_options
           response.should render_template(:new)
         end
       end
@@ -53,7 +53,7 @@ describe CASino::TwoFactorAuthenticatorsController do
 
     context 'without a ticket-granting ticket' do
       it 'redirects to the login page' do
-        get :new, request_options
+        get :new, **request_options
         response.should redirect_to(login_path)
       end
     end
@@ -81,12 +81,12 @@ describe CASino::TwoFactorAuthenticatorsController do
           end
 
           it 'redirects to the two-factor authenticator new page' do
-            post :create, request_options
+            post :create, **request_options
             response.should redirect_to(new_two_factor_authenticator_path)
           end
 
           it 'adds a error message' do
-            post :create, request_options
+            post :create, **request_options
             flash[:error].should == I18n.t('two_factor_authenticators.invalid_two_factor_authenticator')
           end
         end
@@ -100,7 +100,7 @@ describe CASino::TwoFactorAuthenticatorsController do
           end
 
           it 'redirects to the two-factor authenticator new page' do
-            post :create, request_options
+            post :create, **request_options
             response.should redirect_to(new_two_factor_authenticator_path)
           end
         end
@@ -115,17 +115,17 @@ describe CASino::TwoFactorAuthenticatorsController do
           end
 
           it 'redirects to the session overview' do
-            post :create, request_options
+            post :create, **request_options
             response.should redirect_to(sessions_path)
           end
 
           it 'adds a notice' do
-            post :create, request_options
+            post :create, **request_options
             flash[:notice].should == I18n.t('two_factor_authenticators.successfully_activated')
           end
 
           it 'does activate the authenticator' do
-            post :create, request_options
+            post :create, **request_options
             two_factor_authenticator.reload.should be_active
           end
 
@@ -133,12 +133,12 @@ describe CASino::TwoFactorAuthenticatorsController do
             let!(:other_two_factor_authenticator) { FactoryBot.create :two_factor_authenticator, user: user }
 
             it 'does activate the authenticator' do
-              post :create, request_options
+              post :create, **request_options
               two_factor_authenticator.reload.should be_active
             end
 
             it 'does delete the other authenticator' do
-              post :create, request_options
+              post :create, **request_options
               lambda do
                 other_two_factor_authenticator.reload
               end.should raise_error(ActiveRecord::RecordNotFound)
@@ -153,22 +153,22 @@ describe CASino::TwoFactorAuthenticatorsController do
           end
 
           it 'rerenders the new page' do
-            post :create, request_options
+            post :create, **request_options
             response.should render_template(:new)
           end
 
           it 'adds a error message' do
-            post :create, request_options
+            post :create, **request_options
             flash[:error].should == I18n.t('two_factor_authenticators.invalid_one_time_password')
           end
 
           it 'assigns the two-factor authenticator' do
-            post :create, request_options
+            post :create, **request_options
             assigns(:two_factor_authenticator).should be_kind_of(CASino::TwoFactorAuthenticator)
           end
 
           it 'does not activate the authenticator' do
-            post :create, request_options
+            post :create, **request_options
             two_factor_authenticator.reload.should_not be_active
           end
         end
@@ -177,7 +177,7 @@ describe CASino::TwoFactorAuthenticatorsController do
 
     context 'without a ticket-granting ticket' do
       it 'redirects to the login page' do
-        post :create, request_options
+        post :create, **request_options
         response.should redirect_to(login_path)
       end
     end
@@ -198,17 +198,17 @@ describe CASino::TwoFactorAuthenticatorsController do
         let!(:other_two_factor_authenticator) { FactoryBot.create :two_factor_authenticator }
 
         it 'redirects to the session overview' do
-          delete :destroy, request_options
+          delete :destroy, **request_options
           response.should redirect_to(sessions_path)
         end
 
         it 'adds a notice' do
-          delete :destroy, request_options
+          delete :destroy, **request_options
           flash[:notice].should == I18n.t('two_factor_authenticators.successfully_deleted')
         end
 
         it 'deletes the two-factor authenticator' do
-          delete :destroy, request_options
+          delete :destroy, **request_options
           lambda do
             two_factor_authenticator.reload
           end.should raise_error(ActiveRecord::RecordNotFound)
@@ -216,7 +216,7 @@ describe CASino::TwoFactorAuthenticatorsController do
 
         it 'does not delete other two-factor authenticators' do
           lambda do
-            delete :destroy, request_options
+            delete :destroy, **request_options
           end.should change(CASino::TwoFactorAuthenticator, :count).by(-1)
         end
       end
@@ -225,13 +225,13 @@ describe CASino::TwoFactorAuthenticatorsController do
         let!(:two_factor_authenticator) { FactoryBot.create :two_factor_authenticator }
 
         it 'redirects to the session overview' do
-          delete :destroy, request_options
+          delete :destroy, **request_options
           response.should redirect_to(sessions_path)
         end
 
         it 'does not delete two-factor authenticators' do
           lambda do
-            delete :destroy, request_options
+            delete :destroy, **request_options
           end.should_not change(CASino::TwoFactorAuthenticator, :count)
         end
       end
@@ -241,7 +241,7 @@ describe CASino::TwoFactorAuthenticatorsController do
       let(:params) { { id: 0 } }
 
       it 'redirects to the login page' do
-        delete :destroy, request_options
+        delete :destroy, **request_options
         response.should redirect_to(login_path)
       end
     end

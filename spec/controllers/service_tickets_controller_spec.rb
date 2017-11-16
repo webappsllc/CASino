@@ -2,7 +2,7 @@ describe CASino::ServiceTicketsController do
   routes { CASino::Engine.routes }
 
   describe 'GET "validate"' do
-    let(:request_options) { params }
+    let(:request_options) { {params: params} }
     let(:service_ticket) { FactoryBot.create :service_ticket }
     let(:service) { service_ticket.service }
     let(:parameters) { { service: service, ticket: service_ticket.ticket }}
@@ -16,12 +16,12 @@ describe CASino::ServiceTicketsController do
     context 'with an unconsumed service ticket' do
       context 'without renew flag' do
         it 'consumes the service ticket' do
-          get :validate, request_options
+          get :validate, **request_options
           service_ticket.reload.consumed.should == true
         end
 
         it 'answers with the expected response text' do
-          get :validate, request_options
+          get :validate, **request_options
           response.body.should == response_text_success
         end
       end
@@ -31,12 +31,12 @@ describe CASino::ServiceTicketsController do
 
         context 'with a service ticket without issued_from_credentials flag' do
           it 'consumes the service ticket' do
-            get :validate, request_options
+            get :validate, **request_options
             service_ticket.reload.consumed.should == true
           end
 
           it 'answers with the expected response text' do
-            get :validate, request_options
+            get :validate, **request_options
             response.body.should == response_text_failure
           end
         end
@@ -47,12 +47,12 @@ describe CASino::ServiceTicketsController do
           end
 
           it 'consumes the service ticket' do
-            get :validate, request_options
+            get :validate, **request_options
             service_ticket.reload.consumed.should == true
           end
 
           it 'answers with the expected response text' do
-            get :validate, request_options
+            get :validate, **request_options
             response.body.should == response_text_success
           end
         end
@@ -65,7 +65,7 @@ describe CASino::ServiceTicketsController do
       end
 
       it 'answers with the expected response text' do
-        get :validate, request_options
+        get :validate, **request_options
         response.body.should == response_text_failure
       end
     end
