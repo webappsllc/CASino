@@ -1,6 +1,6 @@
 require 'addressable/uri'
 
-class CASino::ProxyTicket < ActiveRecord::Base
+class CASino::ProxyTicket < CASino::ApplicationRecord
   include CASino::ModelConcern::Ticket
 
   self.ticket_prefix = 'PT'.freeze

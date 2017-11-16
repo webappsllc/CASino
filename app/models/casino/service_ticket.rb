@@ -1,6 +1,6 @@
 require 'addressable/uri'
 
-class CASino::ServiceTicket < ActiveRecord::Base
+class CASino::ServiceTicket < CASino::ApplicationRecord
   include CASino::ModelConcern::Ticket
 
   self.ticket_prefix = 'ST'.freeze

@@ -1,4 +1,4 @@
-class CASino::LoginTicket < ActiveRecord::Base
+class CASino::LoginTicket < CASino::ApplicationRecord
   include CASino::ModelConcern::Ticket
   include CASino::ModelConcern::ConsumableTicket
 

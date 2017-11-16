@@ -1,5 +1,5 @@
 
-class CASino::TwoFactorAuthenticator < ActiveRecord::Base
+class CASino::TwoFactorAuthenticator < CASino::ApplicationRecord
   belongs_to :user
 
   scope :active, -> { where(active: true) }
