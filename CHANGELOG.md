@@ -1,3 +1,7 @@
+# 11/15/2017 - v4.2.1
+
+* Backport check for blank params instead of `nil` to address IntegrationTest changes in Rails 5.0
+
 # 11/14/2017 - v4.2.0
 
 * Add Ruby 2.4.0 and 2.4.1 support
