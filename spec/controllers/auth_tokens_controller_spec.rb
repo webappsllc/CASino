@@ -4,7 +4,7 @@ describe CASino::AuthTokensController do
   routes { CASino::Engine.routes }
 
   let(:params) { {} }
-  let(:request_options) { params }
+  let(:request_options) { {params: params} }
 
   before(:each) do
     CASino::AuthTokenValidationService.any_instance.stub(:validation_result).and_return(validation_result)
@@ -17,7 +17,7 @@ describe CASino::AuthTokensController do
       let(:params) { { service: service } }
 
       it 'redirects to the login' do
-        get :login, request_options
+        get :login, **request_options
         response.should redirect_to(login_path(service: service))
       end
     end
@@ -34,7 +34,7 @@ describe CASino::AuthTokensController do
         let(:params) { { service: service } }
 
         it 'renders the service_not_allowed template' do
-          get :login, request_options
+          get :login, **request_options
           response.should render_template(:service_not_allowed)
         end
       end
@@ -44,30 +44,30 @@ describe CASino::AuthTokensController do
         let(:params) { { service: service } }
 
         it 'redirects to the service' do
-          get :login, request_options
+          get :login, **request_options
           response.location.should =~ /^#{Regexp.escape service}\?ticket=ST-/
         end
 
         it 'generates a service ticket' do
           lambda do
-            get :login, request_options
+            get :login, **request_options
           end.should change(CASino::ServiceTicket, :count).by(1)
         end
       end
 
       it 'creates a cookie' do
-        get :login, request_options
+        get :login, **request_options
         response.cookies['tgt'].should_not be_nil
       end
 
       it 'generates a ticket-granting ticket' do
         lambda do
-          get :login, request_options
+          get :login, **request_options
         end.should change(CASino::TicketGrantingTicket, :count).by(1)
       end
 
       it 'redirects to the session overview' do
-        get :login, request_options
+        get :login, **request_options
         response.should redirect_to(sessions_path)
       end
     end
