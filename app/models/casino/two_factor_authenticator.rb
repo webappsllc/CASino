@@ -5,7 +5,7 @@ class CASino::TwoFactorAuthenticator < CASino::ApplicationRecord
   scope :active, -> { where(active: true) }
 
   def self.cleanup
-    all.delete_all(['(created_at < ?) AND active = ?', lifetime.ago, false])
+    where(['(created_at < ?) AND active = ?', lifetime.ago, false]).delete_all
   end
 
   def self.lifetime
