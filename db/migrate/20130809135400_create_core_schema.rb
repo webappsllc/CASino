@@ -5,7 +5,7 @@ class CreateCoreSchema < ActiveRecord::Migration[4.1]
 
   def up
     CoreTables.each do |table_name|
-      if !ActiveRecord::Base.connection.table_exists? table_name
+      unless connection.data_source_exists? table_name
         send "create_#{table_name}"
       end
     end
