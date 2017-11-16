@@ -103,7 +103,7 @@ describe CASino::SessionsController do
         end
 
         context 'with renew parameter' do
-          let(:params) { super.merge(renew: 'true') }
+          let(:params) { super().merge(renew: 'true') }
 
           it 'renders the new template' do
             get :new, **request_options
