@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
     s.cert_chain  = ['casino-public_cert.pem']
   end
 
-
   s.add_runtime_dependency 'addressable', '>= 2.3'
   s.add_runtime_dependency 'faraday', '>= 0.8'
   s.add_runtime_dependency 'grape', '>= 0.8'
