@@ -21,7 +21,7 @@ CASino::Engine.routes.draw do
 
   get 'authTokenLogin' => 'auth_tokens#login'
 
-  root to: redirect('login')
+  root to: redirect(path: '/login')
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
