@@ -40,5 +40,8 @@ class CASino::ServiceTicket::SingleSignOutNotifier
   rescue Faraday::Error::ClientError, Errno::ETIMEDOUT => error
     Rails.logger.warn "Failed to send logout notification to service #{url} due to #{error}"
     false
+  rescue Errno::EADDRNOTAVAIL => error
+    Rails.logger.warn "Failed to send logout notification to service #{url} due to #{error}"
+    url.include?('localhost')
   end
 end
