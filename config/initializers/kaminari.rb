@@ -1,3 +1,3 @@
-require 'kaminari'
+# frozen_string_literal: true
 
-Kaminari::Hooks.init
+require 'kaminari'
